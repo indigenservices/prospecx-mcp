@@ -1,0 +1,36 @@
+{
+  "name": "@prospecx/mcp",
+  "version": "1.0.0",
+  "description": "Prospecx MCP server — run your B2B lead pipeline from any MCP client",
+  "license": "UNLICENSED",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "prospecx-mcp": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js dist/http.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.4.3",
+    "vitest": "^4.1.5"
+  }
+}
