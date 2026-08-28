@@ -40,23 +40,24 @@ and you cannot tell which you are in without asking.
 `prospecx_search_leads` returns. A fabricated id returns not-found; a real id
 from another workspace also returns not-found, never that workspace's data.
 
-**2. Anything that spends or sends runs in two calls.**
+**2. Spending and sending happen on the FIRST call.** There is no confirmation
+step and no second call. `prospecx_unlock_lead_contacts` charges immediately;
+`prospecx_send_email` and `prospecx_send_whatsapp` deliver immediately;
+`prospecx_enroll_in_sequence` commits every message in the cadence at once.
 
-```
-call 1 → no confirm_token → nothing happens → you get a cost + a token
-         ↓
-     SHOW THE USER. GET A REAL ANSWER.
-         ↓
-call 2 → with the token → it happens
-```
+Nothing will stop you, so the discipline is yours:
 
-Never chain both in one turn. A "yes" earlier in the conversation about
-something else is not approval for this. If the user said "unlock the top 3",
-preview all three and present the total before confirming any of them.
+- Say what it costs, or show the exact message, **in your reply, before you
+  call the tool.**
+- Only act when the user asked for that specific action on that specific
+  person. "Draft an email" is not "send an email". "Find me leads" is not
+  "unlock them".
+- Several leads means several charges. Give the total first.
+- Never alter text between showing it and sending it.
 
-Tokens are single-use, expire in 5 minutes, and are bound to the lead they were
-previewed for. An expired token means preview again **and re-ask** — a fresh
-preview is not standing approval.
+A workspace can switch confirmation back on. If a reply hands you a
+`confirm_token`, that workspace did: show the user what it says and call again
+with the token once they agree.
 
 **3. `contact_locked: true` is a billing state, not missing data.** It means the
 workspace has not paid for that person's contact details. It does not mean they

@@ -125,6 +125,12 @@ anywhere in Prospecx.
 ### `POST /leads/:id/unlock` — spends points
 Scope `spend:points`. **Two-phase.**
 
+> This HTTP endpoint keeps the preview/confirm contract. The MCP connector does
+> not — its spend and send tools complete in one call. They are different
+> surfaces with different audiences: a script calling this API can hold a token
+> between two requests trivially, and an assistant holding one across a
+> conversation turn is a different proposition. See [SECURITY.md](SECURITY.md).
+
 Preview — body `{ kind: "contacts" | "deep_research" }`:
 
 ```json

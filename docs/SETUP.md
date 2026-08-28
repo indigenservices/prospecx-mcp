@@ -48,11 +48,14 @@ point, sends anything, or changes a record you would miss. Every tool ships an
 accurate MCP annotation (`readOnlyHint`, `destructiveHint`) so a client that
 sorts tools by risk gets this split for free.
 
-**The two-step confirmation is separate and stays on regardless.** Setting a
-spend tool to "Always allow" removes your client's *approval popup*, not the
-server's contract: the first call still previews and charges nothing, and only a
-second call carrying a confirmation token does anything. See
-[SECURITY.md](SECURITY.md).
+**Be deliberate about the second row.** Those four tools now act on the first
+call — an unlock is charged and an email is gone the moment the tool runs. If
+you set them to "Always allow", nothing at all stands between the assistant's
+judgement and your points or your leads' inboxes.
+
+Leaving them on "Needs approval" puts your client's popup back in that gap,
+which is the only confirmation there is unless you switch the server-side one
+back on — see [SECURITY.md](SECURITY.md).
 
 If "Allow all for this task" is greyed out for a custom connector, that is a
 known Cowork bug rather than anything in this server —

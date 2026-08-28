@@ -5,8 +5,11 @@ so the arguments below are the ones the server actually validates.
 
 **18 tools.** Every one is listed; nothing is hidden behind a flag.
 
-> The stdio npm package ships a subset of these. See
-> [LOCAL.md](LOCAL.md) for which.
+> Spending and sending complete in a SINGLE call. There is no confirmation
+> step to catch a mistake — see [SECURITY.md](SECURITY.md) for what still
+> protects you and what no longer does.
+
+> The stdio npm package ships a subset. See [LOCAL.md](LOCAL.md).
 
 ---
 
@@ -262,73 +265,78 @@ safe.
 
 ---
 
-## Spend — costs points, previews first
+## Spend — costs points, charges on the first call
 
 ### `prospecx_unlock_lead_contacts`
 
 Reveal verified contact details for a lead, or run deep research. THIS SPENDS
-THE USER'S PREPAID POINTS.
+THE USER'S PREPAID POINTS IMMEDIATELY.
 
-TWO STEPS, ALWAYS: 1. Call WITHOUT confirm_token. Nothing is charged. You get
-the exact cost, the resulting balance, and a confirm_token. 2. Show the user
-that cost and ask. Only if they agree, call again with confirm_token.
+There is no confirmation step. One call charges the workspace and returns the
+contacts. So the obligation moves to you:
 
-Never call with a confirm_token the user has not agreed to. Never chain both
-steps in one turn. The token is single-use, expires in 5 minutes, and is bound
-to the lead it was previewed for — so a stale or wrong token fails safely
-rather than charging for the wrong thing.
+- Only call this when the user has actually asked for THIS lead's contacts.
+"Find me leads" is not a request to unlock them. - Say what it costs BEFORE
+you call — check prospecx_get_account if you do not know the balance. -
+Unlocking several means several charges. Say the total first, then do it.
 
 kind='contacts' costs 1 point; kind='deep_research' costs 2. Unlocking an
-already-unlocked lead is free.
+already-unlocked lead is free and says so, so an accidental repeat costs
+nothing.
+
+Some workspaces switch confirmation back on. If the reply asks for a
+confirm_token, show the user the cost, and call again with that token once
+they agree.
 
 | Argument | Type | Required | Notes |
 |---|---|---|---|
 | `lead_id` | string (uuid) | yes | Lead id from prospecx_search_leads. |
 | `kind` | `contacts` \| `deep_research` | no | 'contacts' (1 point) or 'deep_research' (2 points). Default `contacts`. |
-| `confirm_token` | string | no | ONLY on the second call, after the user approved the previewed cost. |
+| `confirm_token` | string | no | Only needed if a previous reply asked for one. Normally omit it — this charges in a single call. |
 
 
 ---
 
-## Reach a person — previews first
+## Reach a person — sends on the first call
 
 ### `prospecx_send_email`
 
 Send an email to a lead from the workspace's connected mailbox. THIS REACHES A
-REAL PERSON AND CANNOT BE RECALLED.
+REAL PERSON IMMEDIATELY AND CANNOT BE RECALLED.
 
-TWO STEPS, ALWAYS: 1. Call with subject and body, WITHOUT confirm_token.
-Nothing sends. You get back the exact recipient and the full body. 2. Show the
-user that message verbatim and ask. Only if they approve, call again with
-confirm_token.
+One call sends. There is no confirmation step, so the judgement is entirely
+yours:
 
-Never send a message the user has not read in full. Never chain both steps in
-one turn. "Send it" said before the preview existed is not approval of what
-the preview turned out to say.
+- SHOW THE USER THE EXACT SUBJECT AND BODY FIRST, in your reply, and let them
+react. Use prospecx_draft_outreach to compose, show that, then send what they
+approved. - Only send when the user has asked to send THIS message to THIS
+person. "Draft an email" is not "send an email". - Never invent or alter the
+text between showing it and sending it. - One call is one email. Sending to
+several people means several calls; say who they are first.
 
-The server executes the PREVIEWED body, not whatever the second call contains
-— so a token cannot be reused to send different text. Single-use, expires in 5
-minutes.
-
-Requires the lead's email to have been unlocked; if it has not, this refuses
+Requires the lead's email to have been unlocked. If it has not, this refuses
 and tells you the cost of unlocking rather than sending anywhere.
+
+Some workspaces switch confirmation back on. If the reply asks for a
+confirm_token, show the user the message and call again with that token once
+they agree.
 
 | Argument | Type | Required | Notes |
 |---|---|---|---|
 | `lead_id` | string (uuid) | yes | Lead id from prospecx_search_leads. |
 | `subject` | string | no | Subject line. Required to preview. |
 | `body` | string | no | Plain-text body. Required to preview. Write it in full — the user must be able to read exactly what will be sent. |
-| `confirm_token` | string | no | ONLY on the second call, after the user read the previewed message and approved it. |
+| `confirm_token` | string | no | Only needed if a previous reply asked for one. Normally omit it — this sends in a single call. |
 
 
 ### `prospecx_send_whatsapp`
 
 Send a WhatsApp message to a lead from the workspace's own paired number. THIS
-REACHES A REAL PERSON AND CANNOT BE RECALLED.
+REACHES A REAL PERSON IMMEDIATELY AND CANNOT BE RECALLED.
 
-Same two-step contract as email: preview without a token, show the user the
-exact message, then confirm. WhatsApp is more intimate than email — a message
-here lands on someone's phone — so be more conservative, not less.
+One call sends, with no confirmation step. WhatsApp lands on someone's phone,
+so be MORE conservative here than with email, not less: show the user the
+exact message in your reply and let them react before you call this.
 
 Keep it short. A long WhatsApp message from an unknown number reads as spam
 and can get the workspace's number restricted.
@@ -340,17 +348,18 @@ locked.
 |---|---|---|---|
 | `lead_id` | string (uuid) | yes | Lead id from prospecx_search_leads. |
 | `body` | string | no | The message. Required to preview. Keep it short — two or three sentences. |
-| `confirm_token` | string | no | ONLY on the second call, after the user approved the previewed message. |
+| `confirm_token` | string | no | Only needed if a previous reply asked for one. Normally omit it. |
 
 
 ### `prospecx_enroll_in_sequence`
 
-Put a lead into an automated follow-up sequence. THIS SENDS MULTIPLE MESSAGES
-OVER DAYS WITHOUT ASKING AGAIN.
+Put a lead into an automated follow-up sequence. ONE CALL SCHEDULES MULTIPLE
+REAL MESSAGES OVER DAYS, sent unattended, with no further prompt.
 
-Weightier than a single send, so treat the confirmation as more serious, not
-less: the user is approving every message in the sequence at once. Say how
-many steps it is and that it runs unattended.
+This is the heaviest thing here. A single call commits the workspace to every
+message in the cadence. Before calling it, tell the user how many messages it
+is, roughly when they land, and that nobody will be asked again — then only
+call it if they still want it.
 
 The sequence stops automatically if the lead replies.
 
@@ -362,7 +371,7 @@ asking for it.
 |---|---|---|---|
 | `lead_id` | string (uuid) | yes | Lead id from prospecx_search_leads. |
 | `template` | `soft_3step` \| `aggressive_5step` \| `single` | no | Cadence. Default 'soft_3step'. Default `soft_3step`. |
-| `confirm_token` | string | no | ONLY on the second call, after the user approved. |
+| `confirm_token` | string | no | Only needed if a previous reply asked for one. Normally omit it. |
 
 
 ---

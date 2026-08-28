@@ -179,7 +179,7 @@ hidden behind a flag.
 | `prospecx_update_deal` | Set deal value, currency, pipeline stage |
 | `prospecx_add_lead` | Add a lead manually |
 
-### Spend — costs prepaid points, always previews first
+### Spend — costs prepaid points, charged on the first call
 
 | Tool | Cost |
 |---|---|
@@ -187,8 +187,9 @@ hidden behind a flag.
 
 ### Reach a person — shows you the message first
 
-These send to a real human under your name. Each previews the exact text and
-returns a confirmation token; nothing leaves until you approve it.
+These reach a real human under your name, **on the first call**. There is no
+confirmation step — see [Spending](#how-spending-works) below before granting
+`send:outreach`.
 
 | Tool | What it does |
 |---|---|
@@ -231,26 +232,31 @@ Clients supporting MCP Apps also receive two UI resources —
 
 ---
 
-## How spending is protected
+## How spending works
 
-Anything that costs points cannot fire in one step.
+Anything that costs points or sends a message **happens on the first call**.
+There is no preview, no confirmation token, and no window to cancel.
 
-1. The assistant calls the tool **without** a confirm token. Nothing is charged.
-   It gets back the exact cost, the resulting balance, and a short-lived token.
-2. It shows you that, and asks.
-3. Only a second call carrying that token executes.
+Still true:
 
-The token maps to **the payload that was previewed**, held server-side — so a
-second call cannot redirect the spend at a different lead. An assistant cannot
-show you one thing and charge you for another. Tokens are single-use and expire
-in five minutes.
+- A connection without `spend:points` cannot spend; without `send:outreach` it
+  cannot message anyone. Scopes are the real gate, and you pick them.
+- The amount charged always matches the amount computed.
+- A lead whose contacts are locked cannot be emailed.
+- Unlocking an already-unlocked lead is free and says so.
+- **Disconnect** in Settings → MCP cuts a client off instantly, even
+  mid-conversation.
 
-Two more guarantees, both enforced server-side:
+No longer true:
 
-- **Scopes.** A connection without `spend:points` physically cannot spend,
-  whatever the assistant tries. The dangerous scopes are never granted by default.
-- **Workspace pinning.** A connection sees exactly one workspace, and stops
-  working the moment its creator loses access to it.
+- You are not shown the cost or the message first. The assistant is told to tell
+  you — emphatically, in every tool description — but that is its judgement, not
+  a server guarantee.
+
+Want the old behaviour? A workspace can turn confirmation back on; see
+[docs/SECURITY.md](docs/SECURITY.md). If you are unsure, connect **without**
+`spend:points` and `send:outreach` — search, briefs and drafting across all four
+channels are free and change nothing.
 
 ---
 
@@ -268,7 +274,7 @@ noticeably better to use:
 
 - **`prospecx-prospecting`** — search strategy, what the fit score means, how to
   triage without wasting points.
-- **`prospecx-outreach`** — the two-step spend contract, and how to write an
+- **`prospecx-outreach`** — what happens on the first call, and how to write an
   opener that does not read as a template.
 
 ---

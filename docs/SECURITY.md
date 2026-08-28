@@ -34,27 +34,49 @@ The last two are off unless you deliberately turn them on.
 
 ---
 
-## Nothing spends or sends in one step
+## Spending and sending happen in one call
 
-Every tool that costs money or reaches a person runs in **two calls**:
+This workspace's connector executes a spend or a send on the **first** tool
+call. There is no confirmation round-trip, and no second call is needed.
 
-1. Called without a confirmation token, it charges nothing and sends nothing. It
-   returns the exact cost, the resulting balance or the exact message text, and
-   a single-use token.
-2. Only a second call carrying that token performs the action.
+Be clear about what that does and does not mean.
 
-The properties that make this more than a convention:
+**What still holds:**
 
-- **Single use.** A token works once.
-- **Five-minute expiry.** A stale token fails safely rather than firing late.
-- **Bound to its subject.** A token previewed for one lead cannot be spent on
-  another — it fails rather than charging for the wrong thing.
-- **Server-enforced.** The server guarantees the action matches the preview. The
-  assistant cannot substitute different text after you approve.
+- **Scopes.** A connection not granted `spend:points` cannot spend, and one not
+  granted `send:outreach` cannot message anyone. These are the real gate, and
+  you choose them when you connect.
+- **The charge matches the computation.** Internally the server still prices the
+  action and then executes *that priced action*, so the amount taken cannot
+  drift from the amount calculated.
+- **Locked leads still cannot be emailed.** Contacts are pay-per-lead and the
+  send tools refuse rather than falling back to an address you have not bought.
+- **Already-unlocked is still free**, and says so.
+- **Disconnect still works instantly**, from Settings → MCP, even mid-conversation.
 
-What the server cannot guarantee is that a human actually read the preview. That
-is why the tool descriptions instruct the model to show it and wait, and why the
-in-card buttons only ever trigger the **preview**, never the confirmation.
+**What no longer holds:**
+
+- **You are not shown the cost or the message before it happens.** The assistant
+  is instructed to tell you first, and the tool descriptions say so emphatically
+  — but that is the model's judgement, not something the server enforces.
+- **There is no window to cancel.** An unlock is charged the moment the tool
+  runs; an email is gone.
+
+If that trade is wrong for your workspace, turn confirmation back on:
+
+```sql
+-- settings is jsonb on companies
+UPDATE companies SET settings = settings || '{"mcp_confirm_spend": true}'::jsonb
+ WHERE id = '<your workspace id>';
+```
+
+With it on, a spend or send returns a preview and a single-use token that
+expires in five minutes and is bound to the lead it was previewed for, and
+nothing happens until a second call carries that token.
+
+The safest configuration if you are unsure: connect **without** `spend:points`
+and `send:outreach`. Everything else — search, briefs, drafting across all four
+channels — is free and changes nothing you would miss.
 
 ---
 

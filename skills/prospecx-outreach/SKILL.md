@@ -1,6 +1,6 @@
 ---
 name: prospecx-outreach
-description: Use before spending Prospecx points or contacting a lead — unlocking contacts, deep research, drafting outreach, sending email or WhatsApp, enrolling a sequence, or when the user asks "how much will that cost". Covers the two-step confirmation contract, which tool drafts versus which sends, and how to write an opener that does not read as a template.
+description: Use before spending Prospecx points or contacting a lead — unlocking contacts, deep research, drafting outreach, sending email or WhatsApp, enrolling a sequence, or when the user asks "how much will that cost". Covers what happens on the first call (points leave, messages go), which tool drafts versus which sends, and how to write an opener that does not read as a template.
 ---
 
 # Spending and outreach in Prospecx
@@ -17,26 +17,30 @@ chargeable action. Tell the user the cost in the same breath as the suggestion:
 
 Never propose a spend without knowing whether they can afford it.
 
-## The two-step contract — this is not optional
+## One call does it — there is nothing to catch a mistake
 
-Anything that spends points or sends a message runs in two calls:
+Spending and sending complete on the **first** call. No confirmation step, no
+second call, no window to cancel. `prospecx_unlock_lead_contacts` charges the
+moment it runs; `prospecx_send_email` and `prospecx_send_whatsapp` deliver;
+`prospecx_enroll_in_sequence` commits every message in the cadence at once.
 
-1. Call the tool **without** `confirm_token`. Nothing is charged. You get back the
-   exact cost, the resulting balance, and a single-use token.
-2. **Show the user that preview and get a real answer.** Then, and only then, call
-   again with the token.
+The server will not stop you, so the discipline is entirely yours:
 
-Rules that follow from this:
+- **Say the cost, or show the exact message, in your reply BEFORE calling.**
+  This is the only review the user gets.
+- **Only act on a specific request for a specific person.** "Draft an email" is
+  not "send an email". "Find me leads" is not "unlock them". "Yes" about one
+  lead is not "yes" about the next.
+- **Several leads means several charges.** Give the total before the first one.
+- **Never change the text between showing it and sending it.**
 
-- Never chain both calls in one turn. A turn where you preview and confirm without
-  the user speaking in between is a violation, even if they said "yes" earlier
-  about something else.
-- "Unlock the top 3" means preview all three and present the total before
-  confirming any.
-- The token expires in 5 minutes and works once. If it expires, preview again and
-  **re-ask** — a fresh preview is not standing approval.
-- The token is bound to the lead it was previewed for, so it cannot be reused for
-  a different one. Do not try.
+What is still true regardless of you: a connection without `spend:points` or
+`send:outreach` cannot do these at all, the amount charged always matches the
+amount computed, and a lead whose contacts are locked cannot be emailed.
+
+Some workspaces switch confirmation back on. If a reply hands you a
+`confirm_token`, that workspace did — show the user what it says, and call again
+with the token once they agree. Do not chain both calls in one turn there.
 
 ## Costs
 
@@ -78,8 +82,8 @@ to anyone else.
 - Match the language the user writes in — English, Hindi and Hinglish are all in
   use here.
 
-Show the draft. Do not send anything unless the user explicitly asks, and even
-then the send goes through the same two-step confirmation.
+Show the draft. Do not send anything unless the user explicitly asks — and
+remember that the send tool will not ask again on your behalf.
 
 ## Sending
 
@@ -89,9 +93,9 @@ then the send goes through the same two-step confirmation.
 | `prospecx_send_whatsapp` | Their phone | An unlocked phone number |
 | `prospecx_enroll_in_sequence` | Their inbox, repeatedly, on a schedule | The sequence id |
 
-All three follow the two-step contract above. The server guarantees the send
-matches the preview; only you can guarantee a human actually read it, so put the
-exact subject and body in front of the user before you pass a token back.
+All three act on the first call. The server guarantees the text sent is the text
+composed; only you can guarantee a human read it first, so put the exact subject
+and body in front of the user before you call.
 
 A lead whose contacts are still locked cannot be emailed — that is deliberate,
 not a bug. Unlock first (1 point, previewed), or pick someone already unlocked.
