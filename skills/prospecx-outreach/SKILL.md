@@ -1,6 +1,6 @@
 ---
 name: prospecx-outreach
-description: Use before spending Prospecx points or contacting a lead — unlocking contacts, deep research, drafting or sending outreach, or when the user asks "how much will that cost". Covers the two-step confirmation contract and how to write an opener that does not read as a template.
+description: Use before spending Prospecx points or contacting a lead — unlocking contacts, deep research, drafting outreach, sending email or WhatsApp, enrolling a sequence, or when the user asks "how much will that cost". Covers the two-step confirmation contract, which tool drafts versus which sends, and how to write an opener that does not read as a template.
 ---
 
 # Spending and outreach in Prospecx
@@ -50,11 +50,26 @@ Unlocking a lead that is already unlocked is free and returns
 `already_unlocked: true` — so an accidental repeat costs nothing. Say so rather
 than implying they were charged.
 
-## Writing an opener
+## Drafting: use the tool, do not freehand it
 
-Read the lead first — `prospecx_get_lead` or `prospecx_show_lead`. The post that
-surfaced them is the whole point: it is the one thing that makes the message
-impossible to have sent to anyone else.
+`prospecx_draft_outreach` writes all four channels at once — email subject and
+body, a WhatsApp message, a LinkedIn DM, and a 30-second call script with
+objection handles — each anchored on the post that surfaced the lead. It costs
+nothing, it sends nothing, and it is cached for 24 hours and shared with the
+Prospecx app, so what you show is what the user already sees in the product.
+
+Reach for it before writing anything by hand. Pass `context` to steer the angle
+("mention we met at the Bangalore meetup"), `language` for Hinglish or Hindi, and
+`force: true` to rewrite a cached draft.
+
+**LinkedIn is copy-and-paste.** Prospecx cannot send on LinkedIn and LinkedIn
+exposes no DM API. Hand the user the DM text; never offer to send it.
+
+## Judging a draft, or writing one yourself
+
+Read the lead first — `prospecx_get_lead`. The post that surfaced them is the
+whole point: it is the one thing that makes the message impossible to have sent
+to anyone else.
 
 - Ground it in that post. Quote or paraphrase the specific thing they said.
 - Under 90 words.
@@ -65,6 +80,21 @@ impossible to have sent to anyone else.
 
 Show the draft. Do not send anything unless the user explicitly asks, and even
 then the send goes through the same two-step confirmation.
+
+## Sending
+
+| Tool | Reaches | Requires |
+|---|---|---|
+| `prospecx_send_email` | Their inbox, from the workspace's connected mailbox | Contacts already unlocked |
+| `prospecx_send_whatsapp` | Their phone | An unlocked phone number |
+| `prospecx_enroll_in_sequence` | Their inbox, repeatedly, on a schedule | The sequence id |
+
+All three follow the two-step contract above. The server guarantees the send
+matches the preview; only you can guarantee a human actually read it, so put the
+exact subject and body in front of the user before you pass a token back.
+
+A lead whose contacts are still locked cannot be emailed — that is deliberate,
+not a bug. Unlock first (1 point, previewed), or pick someone already unlocked.
 
 ## After a conversation
 

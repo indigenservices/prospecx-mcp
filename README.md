@@ -53,8 +53,19 @@ Your browser opens to approve the connection the first time you use it.
 
 ### Local / stdio
 
-For development against a local server, this package also ships a stdio entry
-point. See [docs/LOCAL.md](./docs/LOCAL.md).
+The npm package runs the server over stdio against an API key, for clients that
+cannot do OAuth or for local development.
+
+```bash
+npx @prospecx/mcp
+```
+
+**It ships a subset: 13 tools, not 18.** The three send tools, `prospecx_start_here`
+and `prospecx_draft_outreach` are connector-only for now. Use the hosted
+connector above unless you specifically need stdio — it needs no API key, and it
+is where new tools land first.
+
+See [docs/LOCAL.md](docs/LOCAL.md).
 
 ---
 
@@ -75,17 +86,25 @@ Or use a slash command: `/prospecx_daily_standup`, `/prospecx_prep_call`,
 
 ## Tools
 
+Eighteen tools over the hosted connector. Every one is listed here; nothing is
+hidden behind a flag.
+
+### Start here
+
+| Tool | What it does |
+|---|---|
+| `prospecx_start_here` | Your workspace as it actually is — lead count, what it tracks, points balance, what this connection may do — plus opening moves built from that state. Free, no arguments, and the best first call in any conversation. |
+
 ### Read — free, and cannot change anything
 
 | Tool | What it does |
 |---|---|
 | `prospecx_get_today_brief` | The day's digest: moves worth making, deals at risk, forecast |
 | `prospecx_search_leads` | Search by text, status, minimum fit score |
-| `prospecx_get_lead` | One lead in full, including the post that surfaced them |
-| `prospecx_show_lead` | The same lead as an **interactive card** rendered in the client |
+| `prospecx_get_lead` | One lead in full, including the post that surfaced them. Renders as an **interactive card** in clients that support MCP Apps |
 | `prospecx_get_pipeline` | Leads by stage, with counts and deal value |
 | `prospecx_get_account` | Points balance and the price of every chargeable action |
-| `prospecx_get_insights` | Workspace counters: totals, recent adds, score distribution |
+| `prospecx_get_insights` | Workspace counters: totals, recent adds, average fit |
 | `prospecx_get_agenda` | Follow-up reminders due soon |
 | `prospecx_get_lists` | Saved lists, or the leads inside one |
 
@@ -93,6 +112,7 @@ Or use a slash command: `/prospecx_daily_standup`, `/prospecx_prep_call`,
 
 | Tool | What it does |
 |---|---|
+| `prospecx_draft_outreach` | Email subject and body, a WhatsApp message, a LinkedIn DM and a 30-second call script — all anchored on the post that surfaced the lead. Drafts only; nothing is sent |
 | `prospecx_annotate_lead` | Note, status and follow-up reminder in one call |
 | `prospecx_manage_list` | Create a list and/or add leads to it |
 | `prospecx_update_deal` | Set deal value, currency, pipeline stage |
@@ -103,6 +123,21 @@ Or use a slash command: `/prospecx_daily_standup`, `/prospecx_prep_call`,
 | Tool | Cost |
 |---|---|
 | `prospecx_unlock_lead_contacts` | 1 point (contacts) · 2 points (deep research) |
+
+### Reach a person — shows you the message first
+
+These send to a real human under your name. Each previews the exact text and
+returns a confirmation token; nothing leaves until you approve it.
+
+| Tool | What it does |
+|---|---|
+| `prospecx_send_email` | Sends an email from your connected mailbox. The lead's contact must already be unlocked |
+| `prospecx_send_whatsapp` | Sends a WhatsApp message. Requires an unlocked phone number |
+| `prospecx_enroll_in_sequence` | Puts a lead into an automated follow-up sequence |
+
+**LinkedIn is draft-only.** `prospecx_draft_outreach` writes a LinkedIn DM for
+you to copy across. Prospecx has no LinkedIn send path and LinkedIn exposes no
+DM API, so no tool here claims otherwise.
 
 ---
 
@@ -115,6 +150,7 @@ Prompts appear as **slash commands** in clients that support them.
 | `prospecx_daily_standup` | Turns today's brief into a prioritised plan |
 | `prospecx_prep_call` | A one-page brief on a lead before you speak to them |
 | `prospecx_write_outreach` | Drafts an opener grounded in what the lead posted |
+| `prospecx_triage_inbox` | Ranks open leads into reply today / worth a look / let it cool, reading the post rather than sorting by score, and flags overdue follow-ups |
 
 ---
 
@@ -127,6 +163,10 @@ Resources appear in the client's **attach / context menu**.
 | `prospecx://today` | Today's brief |
 | `prospecx://leads/hot` | Highest-scoring open leads |
 | `prospecx://lead/{id}` | Any single lead, with autocomplete over real leads |
+
+Clients supporting MCP Apps also receive two UI resources —
+`ui://prospecx/welcome.html` and `ui://prospecx/lead.html` — which are what
+`prospecx_start_here` and `prospecx_get_lead` render into.
 
 ---
 

@@ -20,7 +20,7 @@ to rank yourself. Only fall back to search if the brief is thin.
 returns. Never invent a lead id.
 
 **A named person or company** → search with `query`, then `prospecx_get_lead` or
-`prospecx_show_lead` for the full record.
+`prospecx_get_lead` for the full record.
 
 ## What the fit score means
 
@@ -51,7 +51,7 @@ own reasoning. Say that is what you did — do not imply the API filtered by top
 
 ## Showing a lead
 
-Prefer `prospecx_show_lead` when the user wants to LOOK at someone — "show me",
+Prefer `prospecx_get_lead` when the user wants to LOOK at someone — "show me",
 "pull up", "what's the story with". It renders an interactive card with the score
 ring, intent meter and the original post.
 
