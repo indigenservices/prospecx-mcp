@@ -1,8 +1,8 @@
 {
   "name": "@prospecx/mcp",
   "version": "1.0.0",
-  "description": "Prospecx MCP server — run your B2B lead pipeline from any MCP client",
-  "license": "UNLICENSED",
+  "description": "Prospecx MCP server \u2014 run your B2B lead pipeline from any MCP client",
+  "license": "MIT",
   "private": false,
   "type": "module",
   "bin": {
@@ -32,5 +32,24 @@
     "@types/node": "^20.11.30",
     "typescript": "^5.4.3",
     "vitest": "^4.1.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indigenservices/prospecx-mcp.git"
+  },
+  "homepage": "https://prospecx.in/mcp",
+  "bugs": {
+    "url": "https://github.com/indigenservices/prospecx-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "prospecx",
+    "b2b",
+    "lead-generation",
+    "sales",
+    "crm",
+    "ai-agent"
+  ]
 }

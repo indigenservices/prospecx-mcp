@@ -69,11 +69,12 @@ Contact fields are **omitted entirely** unless that lead has been unlocked;
 ```json
 {
   "data": [{
-    "id": "49718ae4-…", "name": "Rohit Bhourayat", "company": null,
-    "headline": "Founder and CEO Quickproperty AI", "status": "New", "score": 8,
+    "id": "11111111-2222-4333-8444-555555555555", "name": "Aanya Mehta",
+    "company": "Brightfold Commerce", "headline": "Co-founder & COO",
+    "status": "New", "score": 9,
     "linkedin_url": "https://www.linkedin.com/in/…", "contact_locked": true
   }],
-  "pagination": { "limit": 20, "offset": 0, "total": 966 }
+  "pagination": { "limit": 20, "offset": 0, "total": 1284 }
 }
 ```
 
@@ -97,6 +98,30 @@ At least one required.
 ### `POST /leads/:id/reminder`
 Scope `write:notes`. Body `{ remind_at: ISO8601, note? }`.
 
+### `POST /leads/:id/drafts`
+Scope `read:leads`. Costs no points and sends nothing.
+
+Body `{ context?, language?: "english"|"hinglish"|"hindi", force?: boolean }`.
+
+Returns first-contact drafts for every channel at once:
+
+```json
+{
+  "lead_id": "1111…", "lead_name": "Aanya Mehta",
+  "email_subject": "…", "email_body": "…",
+  "whatsapp": "…", "linkedin_dm": "…", "cold_call_script": "…",
+  "booking_url": "https://cal.com/…",
+  "cached": true, "cached_at": "2026-08-28T09:00:00Z"
+}
+```
+
+Cached for 24 hours and shared with the Prospecx app, so the draft returned here
+is the one the user already sees in the product. `context` or a different
+`language` bypasses the cache; so does `force: true`.
+
+`linkedin_dm` is text to paste. There is no LinkedIn send endpoint, here or
+anywhere in Prospecx.
+
 ### `POST /leads/:id/unlock` — spends points
 Scope `spend:points`. **Two-phase.**
 
@@ -114,6 +139,23 @@ Preview — body `{ kind: "contacts" | "deep_research" }`:
 Execute — body `{ kind, confirm_token }`. The token is single-use, expires in
 5 minutes, and is bound to the previewed lead. The server executes **the
 previewed payload**, not the body of the second call.
+
+---
+
+## Outreach — reaches a real person
+
+Scope `send:outreach`. **Two-phase**, exactly like unlock: a call without
+`confirm_token` sends nothing and returns the exact message plus a single-use
+token; only a second call carrying that token sends.
+
+| Endpoint | Body (preview) | Notes |
+|---|---|---|
+| `POST /leads/:id/email` | `{ subject, body }` | From the workspace's connected mailbox |
+| `POST /leads/:id/whatsapp` | `{ body }` | Requires an unlocked phone number |
+| `POST /leads/:id/sequence` | `{ sequence_id }` | Enrols into an automated follow-up |
+
+A lead whose contacts are still locked returns **402** rather than falling back
+to an address the workspace has not paid for.
 
 ---
 

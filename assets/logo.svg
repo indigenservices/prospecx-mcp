@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Prospecx mark">
+  <rect width="512" height="512" fill="#FF5A1F"/>
+  <g fill="#F4ECDC" transform="translate(256 256)">
+    <g>
+      <path id="cardinal" d="M 0 -8 C -16 -18, -22 -50, -16 -100 C -10 -140, -3 -148, 0 -148 C 3 -148, 10 -140, 16 -100 C 22 -50, 16 -18, 0 -8 Z"/>
+    </g>
+    <use href="#cardinal" transform="rotate(0)"/>
+    <use href="#cardinal" transform="rotate(90)"/>
+    <use href="#cardinal" transform="rotate(180)"/>
+    <use href="#cardinal" transform="rotate(270)"/>
+    <g>
+      <path id="diagonal" d="M 0 -10 C -22 -20, -28 -52, -22 -90 C -16 -115, -4 -120, 0 -120 C 4 -120, 16 -115, 22 -90 C 28 -52, 22 -20, 0 -10 Z"/>
+    </g>
+    <use href="#diagonal" transform="rotate(45)"/>
+    <use href="#diagonal" transform="rotate(135)"/>
+    <use href="#diagonal" transform="rotate(225)"/>
+    <use href="#diagonal" transform="rotate(315)"/>
+  </g>
+</svg>

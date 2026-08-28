@@ -27,6 +27,25 @@ credential of its own, and builds a fresh server per request from that request's
 PORT=8787 node dist/http.js
 ```
 
+## Which tools the stdio package ships
+
+Thirteen of the connector's eighteen. These are present:
+
+`prospecx_get_today_brief` · `prospecx_search_leads` · `prospecx_get_lead` ·
+`prospecx_get_pipeline` · `prospecx_get_insights` · `prospecx_get_agenda` ·
+`prospecx_get_account` · `prospecx_get_lists` · `prospecx_annotate_lead` ·
+`prospecx_update_deal` · `prospecx_add_lead` · `prospecx_manage_list` ·
+`prospecx_unlock_lead_contacts`
+
+These are **connector-only** for now:
+
+`prospecx_start_here` · `prospecx_draft_outreach` · `prospecx_send_email` ·
+`prospecx_send_whatsapp` · `prospecx_enroll_in_sequence`
+
+New tools land on the hosted connector first. Unless you specifically need
+stdio — a client that cannot do OAuth, or local development against the API —
+use the connector: it needs no API key and it is where the full surface lives.
+
 ## Environment
 
 | Variable | Required | Default |

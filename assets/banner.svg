@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="Prospecx MCP">
+  <defs><g id="petals"><g>
+    <g>
+      <path id="cardinal" d="M 0 -8 C -16 -18, -22 -50, -16 -100 C -10 -140, -3 -148, 0 -148 C 3 -148, 10 -140, 16 -100 C 22 -50, 16 -18, 0 -8 Z"/>
+    </g>
+    <use href="#cardinal" transform="rotate(0)"/>
+    <use href="#cardinal" transform="rotate(90)"/>
+    <use href="#cardinal" transform="rotate(180)"/>
+    <use href="#cardinal" transform="rotate(270)"/>
+    <g>
+      <path id="diagonal" d="M 0 -10 C -22 -20, -28 -52, -22 -90 C -16 -115, -4 -120, 0 -120 C 4 -120, 16 -115, 22 -90 C 28 -52, 22 -20, 0 -10 Z"/>
+    </g>
+    <use href="#diagonal" transform="rotate(45)"/>
+    <use href="#diagonal" transform="rotate(135)"/>
+    <use href="#diagonal" transform="rotate(225)"/>
+    <use href="#diagonal" transform="rotate(315)"/>
+  </g>
+</g></defs>
+  <rect width="1200" height="300" fill="#12100E"/>
+  <!-- Oversized mark bleeding off the right edge, the way the product's own
+       pages use it: present, never competing with the words. -->
+  <g transform="translate(1040 150) scale(1.4189)" opacity="0.10" fill="#FF5A1F"><use href="#petals"/></g>
+  <rect x="88" y="112" width="64" height="64" rx="16" fill="#FF5A1F"/>
+  <g transform="translate(120 144) scale(0.1284)" fill="#F4ECDC"><use href="#petals"/></g>
+  <text x="176" y="140" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="44" font-weight="600" fill="#F7F1E5" letter-spacing="-0.8">Prospecx MCP</text>
+  <text x="178" y="172" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#9A9188" letter-spacing="1.5">RUN YOUR B2B PIPELINE FROM ANY MCP CLIENT</text>
+  <g transform="translate(178 200)">
+    <circle cx="5" cy="11" r="5" fill="#10B981"/>
+    <text x="20" y="16" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#F7F1E5">18 tools</text>
+    <text x="106" y="16" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#5E574F">/</text>
+    <text x="124" y="16" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#F7F1E5">OAuth 2.1</text>
+    <text x="222" y="16" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#5E574F">/</text>
+    <text x="240" y="16" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#F7F1E5">no API key to store</text>
+  </g>
+</svg>

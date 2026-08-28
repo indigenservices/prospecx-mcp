@@ -1,17 +1,73 @@
 <div align="center">
 
-# Prospecx MCP
+<img src="assets/banner.png" alt="Prospecx MCP" width="100%">
+
+<br>
 
 **Run your B2B lead pipeline from Claude, Cursor, or any MCP client.**
 
-Prospecx finds people posting buyer intent, scores them for fit, and helps you
-reach out. This connector puts that pipeline inside the conversation — ask for
-your best leads, read the post that surfaced one, leave a note, move a status,
-in plain language.
+Find people posting buying intent, read the post that surfaced them, draft the
+opener, and move the deal — without leaving the conversation.
 
-[Connect](#connect) · [Tools](#tools) · [Prompts](#prompts) · [Resources](#resources) · [Safety](#how-spending-is-protected) · [API](./docs/API.md)
+<br>
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-FF5A1F.svg?style=flat-square)](LICENSE)
+[![MCP](https://img.shields.io/badge/Model_Context_Protocol-2025--11--05-12100E.svg?style=flat-square)](https://modelcontextprotocol.io)
+[![Tools](https://img.shields.io/badge/tools-18-10B981.svg?style=flat-square)](docs/TOOLS.md)
+[![OAuth 2.1](https://img.shields.io/badge/auth-OAuth_2.1-A8D8F0.svg?style=flat-square)](docs/AUTH.md)
+[![Node](https://img.shields.io/badge/node-%E2%89%A520-333.svg?style=flat-square)](package.json)
 
 </div>
+
+---
+
+## What it looks like
+
+Clients that support [MCP Apps](https://modelcontextprotocol.io) render these
+inline. Everywhere else the same facts arrive as text — nothing is lost, it is
+just less pretty.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**Your first question** — `prospecx_start_here`
+
+<img src="assets/card-welcome.png" alt="The Prospecx welcome card: workspace counters, what the connection may do, and suggested opening moves" width="100%">
+
+</td>
+<td width="50%" valign="top">
+
+**One lead** — `prospecx_get_lead`
+
+<img src="assets/card-lead.png" alt="The Prospecx lead card: fit score ring, buying-intent meter, the post that surfaced the lead, and actions" width="100%">
+
+</td>
+</tr>
+</table>
+
+> Screenshots use invented demo data. No real lead appears in this repository.
+
+---
+
+## Quick start
+
+You do **not** need an API key. The hosted connector uses OAuth — you sign in
+with your Prospecx account and approve the scopes you want.
+
+```
+https://prospecx.in/api/mcp
+```
+
+Paste that URL into your client's *Add connector* / *Add MCP server* box, click
+**Connect**, and approve. That is the whole setup.
+
+Then just ask:
+
+> "What should I do today in Prospecx?"
+
+See [Connect](#connect) below for per-client instructions, or
+[docs/PROMPTS.md](docs/PROMPTS.md) for a page of things worth asking.
 
 ---
 
@@ -214,10 +270,34 @@ noticeably better to use:
 
 ## Documentation
 
-- [API reference](./docs/API.md) — every REST endpoint behind the connector
-- [Authorization](./docs/AUTH.md) — the OAuth 2.1 flow, scopes, token shape
-- [Local development](./docs/LOCAL.md) — stdio transport, building, testing
+| Document | What is in it |
+|---|---|
+| [docs/TOOLS.md](docs/TOOLS.md) | Every tool: arguments, returns, cost, and a real example |
+| [docs/PROMPTS.md](docs/PROMPTS.md) | Things worth asking, grouped by what you are trying to do |
+| [docs/AGENTS.md](docs/AGENTS.md) | Orientation for AI tools reading this repo or driving the server |
+| [docs/SECURITY.md](docs/SECURITY.md) | What the connector can and cannot do, and how spending is gated |
+| [docs/AUTH.md](docs/AUTH.md) | The OAuth 2.1 flow, token shape, and its guarantees |
+| [docs/API.md](docs/API.md) | The underlying HTTP API the tools call |
+| [docs/LOCAL.md](docs/LOCAL.md) | Running the stdio server locally |
+
+---
+
+## Contributing
+
+Issues and pull requests are welcome. Two things worth knowing before you open
+one:
+
+- **Tool descriptions are the product.** A model only ever sees the description,
+  so a change to wording is a behaviour change, not a docs change. Say what the
+  tool does, when to reach for it, and what it will refuse.
+- **Nothing that spends or sends may become one-step.** The two-call contract in
+  [docs/SECURITY.md](docs/SECURITY.md) is not a style preference.
+
+---
 
 ## Licence
 
-UNLICENSED — © Indigen Services.
+[MIT](LICENSE) © Indigen Services.
+
+The Prospecx name and logo are trademarks of Indigen Services and are not covered
+by the MIT licence.
