@@ -100,8 +100,24 @@ and body in front of the user before you call.
 A lead whose contacts are still locked cannot be emailed — that is deliberate,
 not a bug. Unlock first (1 point, previewed), or pick someone already unlocked.
 
+## Before writing anything, check what already exists
+
+Two places may already hold context that makes a generic draft look careless.
+
+`prospecx_get_meetings` with `past: true` — if you have already spoken, quote
+what was agreed rather than reintroducing yourself. `prospecx_get_meeting`
+returns the transcript when a notetaker attended.
+
+`prospecx_get_proposals` — if something has already been quoted, a follow-up
+should refer to it. A proposal opened four times and never answered is a
+different message from one never opened at all.
+
 ## After a conversation
 
 Record it with `prospecx_annotate_lead` — note, status and a follow-up reminder in
 one call. Note that the note REPLACES any existing note, so read the lead first if
 you mean to append.
+
+If the conversation was a call rather than a message, `prospecx_call_debrief`
+does this whole sequence as one routine: reads the transcript, drafts the note,
+sets the reminder.

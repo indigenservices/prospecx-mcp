@@ -19,8 +19,12 @@ to rank yourself. Only fall back to search if the brief is thin.
 → `prospecx_search_leads`. Every other lead tool needs an id that only search
 returns. Never invent a lead id.
 
-**A named person or company** → search with `query`, then `prospecx_get_lead` or
-`prospecx_get_lead` for the full record.
+**A named person or company already in the workspace** → search with `query`,
+then `prospecx_get_lead` for the full record.
+
+**A name or link that arrived from OUTSIDE Prospecx** — a referral, someone
+spotted in a comment thread — is a different tool entirely. See "When the
+person isn't in Prospecx yet" below before reaching for search.
 
 ## What the fit score means
 
@@ -51,12 +55,34 @@ own reasoning. Say that is what you did — do not imply the API filtered by top
 
 ## Showing a lead
 
-Prefer `prospecx_get_lead` when the user wants to LOOK at someone — "show me",
-"pull up", "what's the story with". It renders an interactive card with the score
-ring, intent meter and the original post.
+`prospecx_get_lead` covers both cases, and renders differently depending on the
+client: an interactive card with the score ring, intent meter and the original
+post where that is supported, plain text everywhere else. Call it whenever the
+user wants to LOOK at someone ("show me", "pull up", "what's the story with") or
+you need the facts to reason with — there is only the one tool.
 
-Prefer `prospecx_get_lead` when you only need the facts to reason with, since the
-card is something the user has to read.
+## Two searches, and only one of them is free
+
+`prospecx_search_leads` looks through leads the workspace ALREADY HAS. It costs
+nothing. Reach for it first, always.
+
+`prospecx_find_new_leads` goes out and finds people the workspace has never
+seen. It costs ONE POINT PER LEAD REQUESTED — asking for 15 spends 15 whether or
+not all 15 turn out to be good. Only reach for it when search has genuinely come
+back thin, and say the cost before calling it. Confusing the two is the single
+most expensive mistake available in this workspace.
+
+## When the person isn't in Prospecx yet
+
+A name or LinkedIn link that arrives from OUTSIDE Prospecx — a referral, someone
+in a comment thread, "what do you make of this person" — is neither of the
+tools above. Use `prospecx_lookup_profile` with their LinkedIn URL. It costs 3
+points, charged once per profile (looking the same person up again later is
+free), and it adds them to the workspace as a real lead you can then draft to,
+watch, or pipeline like anyone else.
+
+Do not use `prospecx_find_new_leads` for a specific named person — that tool
+searches by TOPIC, not by identity, and will not reliably find one individual.
 
 ## Contacts are locked until paid for
 
@@ -76,3 +102,11 @@ sentence each.
 
 Finish by offering the obvious next step: save them to a list
 (`prospecx_manage_list`), or draft an opener for the strongest one.
+
+## Before triaging, check what has actually moved
+
+`prospecx_get_radar` reports what watched leads have done recently — a genuine
+signal, not just a static score. A lead who posted again last week is a better
+bet than one sitting untouched at the same score for a month, and a triage that
+ignores Radar is ranking on staleness it does not need to. If the user seems to
+be starting their day, `prospecx_radar_check` runs this as a ready-made routine.
