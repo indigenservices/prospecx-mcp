@@ -39,9 +39,9 @@ A sensible split:
 
 | Stance | Tools |
 |---|---|
-| **Always allow** | `prospecx_start_here`, `prospecx_get_today_brief`, `prospecx_search_leads`, `prospecx_get_lead`, `prospecx_get_pipeline`, `prospecx_get_insights`, `prospecx_get_agenda`, `prospecx_get_account`, `prospecx_get_lists`, `prospecx_draft_outreach` |
-| **Needs approval** | `prospecx_unlock_lead_contacts`, `prospecx_send_email`, `prospecx_send_whatsapp`, `prospecx_enroll_in_sequence` |
-| Your call | `prospecx_annotate_lead`, `prospecx_update_deal`, `prospecx_add_lead`, `prospecx_manage_list` |
+| **Always allow** | `prospecx_start_here`, `prospecx_get_today_brief`, `prospecx_search_leads`, `prospecx_get_lead`, `prospecx_get_pipeline`, `prospecx_get_insights`, `prospecx_get_agenda`, `prospecx_get_account`, `prospecx_get_lists`, `prospecx_get_radar`, `prospecx_get_meetings`, `prospecx_get_meeting`, `prospecx_get_proposals`, `prospecx_get_proposal`, `prospecx_draft_outreach` |
+| **Needs approval** | `prospecx_find_new_leads`, `prospecx_unlock_lead_contacts`, `prospecx_send_email`, `prospecx_send_whatsapp`, `prospecx_enroll_in_sequence` |
+| Your call | `prospecx_annotate_lead`, `prospecx_update_deal`, `prospecx_add_lead`, `prospecx_manage_list`, `prospecx_watch_lead` |
 
 Everything in the first row is read-only or writes a draft. None of them costs a
 point, sends anything, or changes a record you would miss. Every tool ships an

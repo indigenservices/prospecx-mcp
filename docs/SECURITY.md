@@ -43,6 +43,14 @@ Be clear about what that does and does not mean.
 
 **What still holds:**
 
+- **A daily ceiling.** The connector cannot spend more than 50 points a day by
+  default, whatever the balance holds. This is the backstop that replaced
+  confirmation: an assistant stuck in a retry loop hits it and stops, rather than
+  emptying the account. Adjustable per workspace, and `prospecx_get_account`
+  reports what is left of today's allowance alongside the balance.
+- **A per-connection rate limit** of 120 requests a minute, keyed on the
+  connection rather than the network address, so one busy workspace cannot
+  throttle another sharing an assistant's egress.
 - **Scopes.** A connection not granted `spend:points` cannot spend, and one not
   granted `send:outreach` cannot message anyone. These are the real gate, and
   you choose them when you connect.
@@ -67,6 +75,13 @@ If that trade is wrong for your workspace, turn confirmation back on:
 ```sql
 -- settings is jsonb on companies
 UPDATE companies SET settings = settings || '{"mcp_confirm_spend": true}'::jsonb
+ WHERE id = '<your workspace id>';
+```
+
+And to change the daily ceiling (0 disables it entirely):
+
+```sql
+UPDATE companies SET settings = settings || '{"mcp_daily_point_cap": 20}'::jsonb
  WHERE id = '<your workspace id>';
 ```
 

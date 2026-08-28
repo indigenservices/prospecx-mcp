@@ -13,7 +13,7 @@ opener, and move the deal — without leaving the conversation.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-FF5A1F.svg?style=flat-square)](LICENSE)
 [![MCP](https://img.shields.io/badge/Model_Context_Protocol-2025--11--05-12100E.svg?style=flat-square)](https://modelcontextprotocol.io)
-[![Tools](https://img.shields.io/badge/tools-18-10B981.svg?style=flat-square)](docs/TOOLS.md)
+[![Tools](https://img.shields.io/badge/tools-25-10B981.svg?style=flat-square)](docs/TOOLS.md)
 [![OAuth 2.1](https://img.shields.io/badge/auth-OAuth_2.1-A8D8F0.svg?style=flat-square)](docs/AUTH.md)
 [![Node](https://img.shields.io/badge/node-%E2%89%A520-333.svg?style=flat-square)](package.json)
 
@@ -147,8 +147,8 @@ Or use a slash command: `/prospecx_daily_standup`, `/prospecx_prep_call`,
 
 ## Tools
 
-Eighteen tools over the hosted connector. Every one is listed here; nothing is
-hidden behind a flag.
+Twenty-five tools over the hosted connector. Every one is listed here; nothing
+is hidden behind a flag.
 
 ### Start here
 
@@ -169,6 +169,27 @@ hidden behind a flag.
 | `prospecx_get_agenda` | Follow-up reminders due soon |
 | `prospecx_get_lists` | Saved lists, or the leads inside one |
 
+### Radar — what your watched leads just did
+
+| Tool | What it does |
+|---|---|
+| `prospecx_get_radar` | Which leads you are watching, and what they have just posted or changed |
+| `prospecx_watch_lead` | Put a lead on Radar, or take them off |
+
+### Meetings — calls, transcripts and minutes
+
+| Tool | What it does |
+|---|---|
+| `prospecx_get_meetings` | Upcoming or past calls, with the lead each is about |
+| `prospecx_get_meeting` | One meeting in full, including transcript and minutes if a notetaker attended |
+
+### Proposals — what you quoted and who read it
+
+| Tool | What it does |
+|---|---|
+| `prospecx_get_proposals` | Every proposal, and whether it was sent, opened or accepted |
+| `prospecx_get_proposal` | One proposal in full — scope, pricing and body |
+
 ### Write — free, and only touches your own records
 
 | Tool | What it does |
@@ -183,7 +204,11 @@ hidden behind a flag.
 
 | Tool | Cost |
 |---|---|
+| `prospecx_find_new_leads` | **1 point per lead requested** — goes out and finds people you do not have yet |
 | `prospecx_unlock_lead_contacts` | 1 point (contacts) · 2 points (deep research) |
+
+A **daily ceiling** (default 50 points) bounds what the connector can spend,
+whatever the balance holds. `prospecx_get_account` reports what is left of it.
 
 ### Reach a person — shows you the message first
 
@@ -212,7 +237,13 @@ Prompts appear as **slash commands** in clients that support them.
 | `prospecx_daily_standup` | Turns today's brief into a prioritised plan |
 | `prospecx_prep_call` | A one-page brief on a lead before you speak to them |
 | `prospecx_write_outreach` | Drafts an opener grounded in what the lead posted |
-| `prospecx_triage_inbox` | Ranks open leads into reply today / worth a look / let it cool, reading the post rather than sorting by score, and flags overdue follow-ups |
+| `prospecx_triage_inbox` | Ranks open leads into reply today / worth a look / let it cool, and flags overdue follow-ups |
+| `prospecx_radar_check` | What your watched leads just did, and who to act on first |
+| `prospecx_call_debrief` | Turns a finished call into notes, objections and a dated next step |
+| `prospecx_pipeline_review` | Where the pipeline is stuck, separating proposals never opened from ones ignored |
+| `prospecx_find_and_qualify` | Searches what you have first, then goes looking, then ranks what came back |
+| `prospecx_warm_up_cold` | Leads that went quiet, each with one specific reason to reopen |
+| `prospecx_before_i_call` | Everything about a lead on one screen, for reading while the phone rings |
 
 ---
 

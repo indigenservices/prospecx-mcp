@@ -36,6 +36,12 @@ and you cannot tell which you are in without asking.
 
 ## The rules that are not style preferences
 
+**0. Two searches, and only one is free.** `prospecx_search_leads` looks through
+leads the workspace ALREADY has and costs nothing. `prospecx_find_new_leads` goes
+out and finds people it has never seen, and costs ONE POINT PER LEAD REQUESTED.
+Search first. Reaching for the paid one when the answer was already in the
+workspace is the most expensive mistake available here.
+
 **1. Never invent a lead id.** Every lead tool takes a UUID that only
 `prospecx_search_leads` returns. A fabricated id returns not-found; a real id
 from another workspace also returns not-found, never that workspace's data.
@@ -87,6 +93,11 @@ exposes no DM API. Hand the user the DM text to paste. Do not offer to send it.
 | Reports what happened on a call | `prospecx_annotate_lead` |
 | "it's worth X", "move them to Y" | `prospecx_update_deal` |
 | Describes someone met elsewhere | `prospecx_add_lead` |
+| "has anything moved", "what's new" | `prospecx_get_radar` |
+| "keep an eye on her", "tell me when they post" | `prospecx_watch_lead` |
+| "who am I meeting", "what did we discuss" | `prospecx_get_meetings` / `prospecx_get_meeting` |
+| "did they read the proposal" | `prospecx_get_proposals` |
+| "find me NEW leads" (costs points) | `prospecx_find_new_leads` |
 
 Full signatures: [TOOLS.md](TOOLS.md).
 

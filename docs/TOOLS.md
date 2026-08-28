@@ -3,11 +3,13 @@
 Generated from the live connector's `tools/list`, not written from memory —
 so the arguments below are the ones the server actually validates.
 
-**18 tools.** Every one is listed; nothing is hidden behind a flag.
+**25 tools.** Every one is listed; nothing is hidden behind a flag.
 
 > Spending and sending complete in a SINGLE call. There is no confirmation
-> step to catch a mistake — see [SECURITY.md](SECURITY.md) for what still
-> protects you and what no longer does.
+> step — see [SECURITY.md](SECURITY.md) for what still protects you.
+
+> A daily point ceiling (default 50) bounds what the connector can spend,
+> whatever the balance. `prospecx_get_account` reports what is left of it.
 
 > The stdio npm package ships a subset. See [LOCAL.md](LOCAL.md).
 
@@ -128,9 +130,14 @@ coming up", "who do I owe a follow-up".
 
 ### `prospecx_get_account`
 
-Remaining points and the point cost of every chargeable action. Call BEFORE
-proposing anything that spends, so you can tell the user what it will cost and
-whether they can afford it.
+Remaining points, the cost of every chargeable action, and how much of today's
+connector spending allowance is left.
+
+Call BEFORE proposing anything that spends. Two numbers matter and they are
+different: the BALANCE is what the workspace owns, and the DAILY ALLOWANCE is
+how much of it this connection may spend today. Hitting the allowance is not
+the same as running out of points, and telling a user they are out of points
+when they are not is a bad way to be wrong.
 
 _No arguments._
 
@@ -143,6 +150,120 @@ all lists; pass it to open one.
 | Argument | Type | Required | Notes |
 |---|---|---|---|
 | `list_id` | string (uuid) | no | A list id to open. Omit to see all lists first. |
+
+
+---
+
+## Radar — what your watched leads just did
+
+### `prospecx_get_radar`
+
+Which leads the workspace is WATCHING, and what those leads have done recently
+— new posts, job changes, and other signals Radar detected.
+
+This is the "has anything moved since I last looked" question, and it is
+usually the right first call of a morning alongside prospecx_get_today_brief.
+A signal here means a real person did something real, recently: it is a far
+better reason to reach out than a high score alone.
+
+Free. Watching is separate from the lead being in the pipeline — a watched
+lead is one someone decided to keep an eye on.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `signal_limit` | integer | no | How many recent signals to return. Default 20. Default `20`. |
+
+
+### `prospecx_watch_lead`
+
+Put a lead on Radar so Prospecx checks their LinkedIn on a schedule and
+reports when they post something new — or take them off it.
+
+Use it when the user says a lead is interesting but not ready: "keep an eye on
+her", "tell me when they post again", "stop watching him". Costs nothing.
+
+Watching needs a LinkedIn URL on the lead; if there is none this refuses
+rather than silently doing nothing. Watching an already-watched lead just
+updates the cadence.
+
+Watch slots are limited by plan, so do not watch leads speculatively — pick
+the ones the user actually named.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `lead_id` | string (uuid) | yes | Lead id from prospecx_search_leads. |
+| `action` | `watch` \| `unwatch` | no | 'watch' to start, 'unwatch' to stop. Default `watch`. |
+| `cadence` | `daily` \| `weekly` \| `biweekly` | no | How often to check. Default weekly. Only meaningful when watching. Default `weekly`. |
+
+
+---
+
+## Meetings — calls, transcripts and minutes
+
+### `prospecx_get_meetings`
+
+Calls on the calendar, with the lead each one is about. Use for "what am I
+doing today", "who am I meeting this week", or — with past: true — "what did
+we discuss last time".
+
+Past meetings may carry a transcript and minutes if a notetaker attended. When
+they do, prospecx_get_meeting returns them, which is the difference between
+walking into a call prepared and guessing.
+
+Free.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `days` | integer | no | How far ahead (or back) to look. Default 14. Default `14`. |
+| `past` | boolean | no | true for meetings that already happened. Default `False`. |
+
+
+### `prospecx_get_meeting`
+
+Everything recorded about a single meeting: who it was with, the transcript if
+a notetaker attended, the minutes, and any scope of work that came out of it.
+
+Use this before a follow-up call, or when the user asks what was agreed.
+Quoting what someone actually said last time is the difference between a
+follow-up that lands and one that reads as generic.
+
+Needs a meeting id from prospecx_get_meetings. Free.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `meeting_id` | string (uuid) | yes | Meeting id from prospecx_get_meetings. |
+
+
+---
+
+## Proposals — what you quoted and who read it
+
+### `prospecx_get_proposals`
+
+Every proposal the workspace has raised, with whether it was sent, whether the
+lead OPENED it, and whether they accepted.
+
+The viewed_at field is the useful one: a proposal sent three days ago and
+never opened is a different conversation from one opened four times. Use this
+for "what is outstanding", "did they read it", "what have I quoted".
+
+Free. Pass lead_id to narrow to one lead.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `lead_id` | string (uuid) | no | Narrow to one lead. Omit for all. |
+| `status` | string | no | Filter by status, e.g. 'sent' or 'accepted'. |
+
+
+### `prospecx_get_proposal`
+
+The full text of a proposal — scope, pricing and body — plus whether it has
+been sent, opened or accepted. Use before following up on one, so the follow-
+up refers to what was actually quoted. Free.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `proposal_id` | string (uuid) | yes | Proposal id from prospecx_get_proposals. |
 
 
 ---
@@ -265,7 +386,39 @@ safe.
 
 ---
 
-## Spend — costs points, charges on the first call
+## Spend — costs points, charged on the first call
+
+### `prospecx_find_new_leads`
+
+Go and find NEW people who have posted buying intent, and add them to the
+workspace. THIS SPENDS ONE POINT PER LEAD REQUESTED, immediately.
+
+This is different from prospecx_search_leads, and confusing the two is
+expensive. search_leads looks through leads the workspace ALREADY has and is
+free. This one goes out and finds people it has never seen, and bills for
+every one it looks for — asking for 20 costs 20 points whether or not all 20
+turn out to be good.
+
+Use it when the user wants people they do not have yet: "find me some new
+leads", "who is hiring React this week", "go look for logistics founders in
+Dubai". Search the existing leads FIRST — the answer is often already in the
+workspace, and free.
+
+Say the cost before calling. Default to a small number: 10 is a real search,
+25 is a big one. Do not raise the limit because the first run returned few
+results; that usually means the query was wrong, not too small.
+
+Takes up to two minutes and reports progress while it runs. The leads it finds
+land in the workspace and are searchable afterwards.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `query` | string | yes | What to look for, in plain words — "hiring a shopify developer", "needs a 3PL partner". This is matched against what people posted, so describe the SIGNAL, not the job title. |
+| `limit` | integer | no | How many to look for. COSTS ONE POINT EACH. Default 10. Keep it small unless the user asked for more. Default `10`. |
+| `location` | string | no | Narrow by place, e.g. "India" or "Dubai". |
+| `industry` | string | no | Narrow by industry. |
+| `title` | string | no | Narrow by job title, e.g. "Founder". |
+
 
 ### `prospecx_unlock_lead_contacts`
 

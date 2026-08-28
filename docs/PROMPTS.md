@@ -24,7 +24,22 @@ to call.
 
 ---
 
-## Finding people
+## Finding people you do not have yet
+
+> Find me new leads posting about needing a 3PL partner.
+
+> Go look for founders hiring Shopify developers in India.
+
+**This costs one point per lead requested.** It goes out and finds people the
+workspace has never seen, then adds them. Ask for 10 and it costs 10, whether or
+not all 10 turn out to be good.
+
+Prospecx will search what you already have first — that is free, and the answer
+is often already there.
+
+---
+
+## Searching people you already have
 
 > Find leads hiring for React with a fit score above 8.
 
@@ -116,6 +131,43 @@ cannot be emailed — unlock first.
 
 ---
 
+## What moved
+
+> What's happened with the leads I'm watching?
+
+> Keep an eye on Aanya and tell me when she posts again.
+
+> Stop watching him.
+
+Radar checks watched leads on a schedule. A signal means a real person did
+something real recently — a much better reason to reach out than a high score.
+
+---
+
+## Calls and what was said
+
+> Who am I meeting this week?
+
+> What did we agree with Will last time?
+
+> Debrief my last call and set a follow-up.
+
+If a notetaker attended, the transcript and minutes come back too — which is the
+difference between a follow-up that quotes them and one that reads as generic.
+
+---
+
+## Proposals
+
+> Did they open the proposal?
+
+> What have I quoted this month?
+
+`viewed_at` is the useful field: sent and never opened is a different
+conversation from opened four times.
+
+---
+
 ## Slash commands
 
 Clients that support MCP prompts show these in a menu.
@@ -126,6 +178,12 @@ Clients that support MCP prompts show these in a menu.
 | `prospecx_prep_call` | A one-page brief before you dial: who they are, the post quoted back, three grounded questions, one risk | `lead` |
 | `prospecx_write_outreach` | An opener under 90 words, grounded in the post | `lead`, `angle?` |
 | `prospecx_triage_inbox` | Ranks open leads into reply today / worth a look / let it cool, and flags overdue follow-ups | none |
+| `prospecx_radar_check` | What your watched leads just did, and who to act on first | none |
+| `prospecx_call_debrief` | Turns a finished call into notes, objections and a dated next step | `lead?` |
+| `prospecx_pipeline_review` | Where the pipeline is stuck, and three moves this week | none |
+| `prospecx_find_and_qualify` | Searches what you have, then goes looking, then ranks the result | `need`, `count?` |
+| `prospecx_warm_up_cold` | Leads that went quiet, each with a specific reason to reopen | none |
+| `prospecx_before_i_call` | One screen of everything, for reading while the phone rings | `lead` |
 
 ---
 
@@ -139,5 +197,9 @@ Worth knowing so a refusal does not read as a bug:
   something else, it previews and asks again.
 - **Emailing a locked lead.** You have not paid for that address yet.
 - **Sending on LinkedIn.** There is no API for it. You get text to paste.
+- **Spending past the daily ceiling.** A default 50-point-a-day limit bounds the
+  connector whatever your balance is. It says how much is left when it stops.
+- **Watching a lead with no LinkedIn URL.** There is nothing to watch, so it says
+  so rather than pretending.
 - **Reaching another workspace's data.** A lead id from elsewhere returns
   not-found, never someone else's record.
