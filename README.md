@@ -66,8 +66,13 @@ Then just ask:
 
 > "What should I do today in Prospecx?"
 
-See [Connect](#connect) below for per-client instructions, or
-[docs/PROMPTS.md](docs/PROMPTS.md) for a page of things worth asking.
+Per-client instructions — including **Claude Cowork** and how to stop it asking
+on every tool call — are in [docs/SETUP.md](docs/SETUP.md).
+[docs/PROMPTS.md](docs/PROMPTS.md) is a page of things worth asking.
+
+Manage it from **Settings → MCP** in Prospecx: what is connected, what it was
+allowed to do, what it has been calling, and a Disconnect button that works
+immediately.
 
 ---
 
@@ -272,6 +277,7 @@ noticeably better to use:
 
 | Document | What is in it |
 |---|---|
+| [docs/SETUP.md](docs/SETUP.md) | Connecting from Cowork, Claude, Claude Code or Cursor — and how to stop it asking on every call |
 | [docs/TOOLS.md](docs/TOOLS.md) | Every tool: arguments, returns, cost, and a real example |
 | [docs/PROMPTS.md](docs/PROMPTS.md) | Things worth asking, grouped by what you are trying to do |
 | [docs/AGENTS.md](docs/AGENTS.md) | Orientation for AI tools reading this repo or driving the server |
