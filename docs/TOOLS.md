@@ -3,7 +3,7 @@
 Generated from the live connector's `tools/list`, not written from memory —
 so the arguments below are the ones the server actually validates.
 
-**25 tools.** Every one is listed; nothing is hidden behind a flag.
+**38 tools.** Every one is listed; nothing is hidden behind a flag.
 
 > Spending and sending complete in a SINGLE call. There is no confirmation
 > step — see [SECURITY.md](SECURITY.md) for what still protects you.
@@ -525,6 +525,192 @@ asking for it.
 | `lead_id` | string (uuid) | yes | Lead id from prospecx_search_leads. |
 | `template` | `soft_3step` \| `aggressive_5step` \| `single` | no | Cadence. Default 'soft_3step'. Default `soft_3step`. |
 | `confirm_token` | string | no | Only needed if a previous reply asked for one. Normally omit it. |
+
+
+---
+
+## Lead Lens — bring in someone from outside Prospecx
+
+### `prospecx_lookup_profile`
+
+Paste a LinkedIn profile URL and get the person: their real headline and
+company, verified contact details, work history, and an AI dossier on what
+they are likely to care about. THIS SPENDS 3 POINTS.
+
+Use it when a NAME OR LINK ARRIVES FROM OUTSIDE Prospecx — a referral, someone
+spotted in a comment thread, "what do you make of this person". If they are
+already in the workspace, `prospecx_search_leads` finds them for free; check
+that first.
+
+Charged once per profile. Looking the same person up again is free, so do not
+avoid re-checking someone whose situation may have changed.
+
+The person is added to the workspace afterwards and behaves like any other
+lead — you can draft to them, watch them, or put them in the pipeline.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `url` | string | yes | A LinkedIn profile URL, e.g. https://www.linkedin.com/in/someone. Company pages and post links do not work. |
+
+
+---
+
+## X Leads — candidates sourced from X, staged for review
+
+A separate lead source from everything above: people who posted buying-intent
+on X (Twitter), matched against an identity with a confidence score. Off by
+default — `prospecx_xleads_status` reports zeros for a workspace that hasn't
+turned it on, which is a real answer, not an error.
+
+### `prospecx_xleads_status`
+
+Whether this workspace has X Leads turned on, and how many candidates sit in
+each stage: unmatched, needs_review, matched, promoted, rejected.
+
+_No arguments._
+
+
+### `prospecx_xleads_candidates`
+
+Candidates X Leads found, filtered by stage — defaults to needs_review, the
+actual work queue: a real person posted buying-intent, and the identity match
+needs a human (or you) to confirm it's the right person before it becomes a
+lead.
+
+Each candidate carries the original post, an intent score, and how confident
+the identity match is. Read the post before approving — a confident name match
+on the wrong person is worse than an unmatched one.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `status` | `needs_review` \| `unmatched` \| `matched` \| `promoted` \| `rejected` \| `all` | no | Stage to filter by. Default `needs_review`. |
+| `limit` | integer | no | Max candidates to return, 1-100. Default `30`. |
+
+
+### `prospecx_xleads_get`
+
+The full record for one candidate: the original post, why it scored the way it
+did, and every identity match candidate considered — not just the one picked.
+Use before approving or rejecting one you are unsure about.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `candidate_id` | string (uuid) | yes | Candidate id from `prospecx_xleads_candidates`. |
+
+
+### `prospecx_xleads_approve`
+
+Confirms the identity match on a candidate and promotes it to a real lead in
+the workspace — from then on it behaves like any lead found through search:
+draftable, watchable, pipeline-able.
+
+Only call this after reading the candidate (`prospecx_xleads_get`) and being
+genuinely confident it's the right person — approving the wrong match creates
+a real, wrong lead. If the candidate has no matched LinkedIn URL yet, pass one
+explicitly or this refuses.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `candidate_id` | string (uuid) | yes | Candidate id from `prospecx_xleads_candidates`. |
+| `linkedin_url` | string | no | Override or supply the LinkedIn URL, if the candidate doesn't already have a matched one. |
+
+
+### `prospecx_xleads_reject`
+
+Marks a candidate rejected — wrong identity match, or a real match but not
+actually a buyer. It stays queryable (never deleted) but drops out of the
+review queue. Cannot be undone through this tool.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `candidate_id` | string (uuid) | yes | Candidate id from `prospecx_xleads_candidates`. |
+
+
+---
+
+## Freelance — the gig-bidding pipeline
+
+Freelancer.com projects, discovered and scored the same way leads are — a
+completely separate pipeline (`gig_leads`, not `leads`). Read-only here on
+purpose: submitting a bid, running autopilot, or messaging a client puts real
+money and a real message in front of a real person on an external platform, so
+those stay in the app, not in an unattended tool call.
+
+### `prospecx_freelance_status`
+
+Whether this workspace has the Freelance panel turned on, whether a
+Freelancer.com account is connected, and a quick count of the current feed by
+status.
+
+_No arguments._
+
+
+### `prospecx_freelance_dashboard`
+
+The numbers a manager checks first: gigs bid on and still open, how many won
+vs lost, bids placed this week vs last, and the total USD-fair value of
+everything currently shortlisted or bid on.
+
+_No arguments._
+
+
+### `prospecx_freelance_search_gigs`
+
+Gigs discovered for this workspace, filterable and sorted. Each result carries
+a fit score, an opportunity X-Ray verdict (green/amber/red — winnability and
+scam-risk heuristics), and whether the connected profile's skills make it
+biddable. This only reads what discovery already found — it does not search
+Freelancer.com live.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `q` | string | no | Text search over title, description and client name. |
+| `status` | `new` \| `shortlisted` \| `drafted` \| `bid` \| `skipped` \| `won` \| `lost` \| `all` | no | Feed status. Default `new`. |
+| `sort` | `fit` \| `recent` \| `budget` \| `bids` \| `closing` | no | Default `fit`. |
+| `min_fit` | integer | no | Only gigs at or above this fit score (0-100). |
+| `safe_only` | boolean | no | Hide gigs the X-Ray flags red. Default `false`. |
+| `skills` | string | no | Comma-separated skills to require, e.g. "React,Node.js". |
+| `limit` | integer | no | Max gigs to return, 1-60. Default `20`. |
+
+
+### `prospecx_freelance_get_gig`
+
+The full listing for one gig plus its X-Ray: winnability signals, risk flags,
+a suggested bid, and whether the connected profile can bid on it at all.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `gig_id` | string (uuid) | yes | Gig id from `prospecx_freelance_search_gigs`. |
+
+
+### `prospecx_freelance_win_ready`
+
+The curated set: open gigs with a high win-score (fit + winnability + low
+competition combined), scam-risk and unbiddable ones already excluded. The
+"what should I actually bid on today" answer, not the raw feed.
+
+| Argument | Type | Required | Notes |
+|---|---|---|---|
+| `limit` | integer | no | Max gigs to return, 1-50. Default `15`. |
+| `min_score` | integer | no | Override the win-score floor (there is a sensible default). |
+
+
+### `prospecx_freelance_my_bids`
+
+Every bid this workspace has submitted, with its current state: shortlisted,
+pending, won, or lost. The warm-pipeline tracker.
+
+_No arguments._
+
+
+### `prospecx_freelance_skill_gap`
+
+For each skill the connected profile does NOT have, how many currently-open
+gigs it would unlock and their combined USD value — ranked by value, so the
+top of the list is the highest-leverage skill to add on Freelancer.com. A pure
+read over already-discovered gigs; does not call Freelancer.com live.
+
+_No arguments._
 
 
 ---

@@ -147,8 +147,8 @@ Or use a slash command: `/prospecx_daily_standup`, `/prospecx_prep_call`,
 
 ## Tools
 
-Twenty-five tools over the hosted connector. Every one is listed here; nothing
-is hidden behind a flag.
+Thirty-eight tools over the hosted connector. Every one is listed here;
+nothing is hidden behind a flag.
 
 ### Start here
 
@@ -225,6 +225,41 @@ confirmation step — see [Spending](#how-spending-works) below before granting
 **LinkedIn is draft-only.** `prospecx_draft_outreach` writes a LinkedIn DM for
 you to copy across. Prospecx has no LinkedIn send path and LinkedIn exposes no
 DM API, so no tool here claims otherwise.
+
+### Lead Lens — bring in someone from outside Prospecx
+
+| Tool | Cost |
+|---|---|
+| `prospecx_lookup_profile` | **3 points** — paste a LinkedIn URL, get the person: headline, verified contacts, work history, an AI dossier. Added to the workspace afterwards |
+
+### X Leads — candidates sourced from X, staged for review
+
+Off by default per workspace. A separate lead source: people who posted
+buying-intent on X, matched against an identity with a confidence score.
+
+| Tool | What it does |
+|---|---|
+| `prospecx_xleads_status` | Whether it's on, and how full the review queue is |
+| `prospecx_xleads_candidates` | Candidates awaiting review, with the original post and intent score |
+| `prospecx_xleads_get` | One candidate in full, including every identity match considered |
+| `prospecx_xleads_approve` | Confirm the identity match — promotes to a real lead |
+| `prospecx_xleads_reject` | Wrong person, or not actually a buyer |
+
+### Freelance — the gig-bidding pipeline
+
+Freelancer.com projects, discovered and scored like leads. **Read-only on
+purpose** — submitting a bid or messaging a client puts real money and a real
+message in front of a real person, so that stays in the app.
+
+| Tool | What it does |
+|---|---|
+| `prospecx_freelance_status` | Whether it's on, and whether an account is connected |
+| `prospecx_freelance_dashboard` | Open bids, won/lost, pipeline value |
+| `prospecx_freelance_search_gigs` | The discovered feed, filterable by fit, budget, skills, competition |
+| `prospecx_freelance_get_gig` | One gig plus its opportunity X-Ray — winnability and scam-risk signals |
+| `prospecx_freelance_win_ready` | The curated shortlist: high win-score, risk already excluded |
+| `prospecx_freelance_my_bids` | Submitted bids and their live status |
+| `prospecx_freelance_skill_gap` | Which missing skill would unlock the most pipeline value |
 
 ---
 
